@@ -58,7 +58,7 @@ jobs:
     - name: Decrypt Secret
       id: decrypt_secret
       run: |
-        openssl enc -d -aes-256-cbc -in secret.txt -out decrypted_secret.txt -pass pass:$ENCRYPTION_PASSWORD
+        openssl enc -d -aes-256-cbc -pbkdf2 -in secret.txt -out decrypted_secret.txt -pass pass:$ENCRYPTION_PASSWORD
     - name: read secret
       id: read_secret
       run: |
