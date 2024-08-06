@@ -28,6 +28,6 @@ jobs:
         echo "::add-mask::${SECRET_OUTPUTS}"
         echo "generated secret is : ${SECRET_OUTPUTS}"
       env:
-        SECRET_OUTPUTS="${{ steps.step1.outputs.secret }}"
+        SECRET_OUTPUTS: ${{ steps.step1.outputs.secret }}
     outputs:
      secret: ${{ steps.step1.outputs.secret }} 
