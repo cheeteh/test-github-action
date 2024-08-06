@@ -17,6 +17,8 @@ on:
 jobs:
   printing-secret:
     runs-on: ubuntu-latest
+    outputs:
+     secret: ${{ steps.generate.outputs.secret }} 
     steps:
     - name: generate
       id: generate
@@ -29,14 +31,12 @@ jobs:
         echo "generated secret is : ${SECRET}"
       env:
         SECRET: ${{ steps.generate.outputs.secret }}
-    outputs:
-     secret: ${{ steps.generate.outputs.secret }} 
   fetch-secret:
     runs-on: ubuntu-latest
     needs: [printing-secret]
     steps:
     - name: fetch
-      id: fetch
+      shell: bash
       run: |
         secret="${{ needs.printing-secret.outputs.secret }}"
         echo "print secret : ${secret}"
