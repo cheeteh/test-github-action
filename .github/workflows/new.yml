@@ -22,7 +22,6 @@ jobs:
       id: generate
       run: | 
         secret=`echo $RANDOM`
-        echo "::add-mask::${secret}"
         echo "secret=$secret" >> $GITHUB_OUTPUT
     - name: print
       run: |
@@ -31,3 +30,12 @@ jobs:
         SECRET_OUTPUTS: ${{ steps.generate.outputs.secret }}
     outputs:
      secret: ${{ steps.generate.outputs.secret }} 
+  fetch-secret:
+    runs-on: ubuntu-latest
+    steps:
+    - name: fetch
+      id: fetch
+      run: |
+        echo "fetched secret is : ${FETCHED_SECRET}
+      env:
+        FETCHED_SECRET: ${{ needs.generate.outputs.secret }}
