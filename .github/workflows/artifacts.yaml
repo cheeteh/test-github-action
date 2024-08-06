@@ -21,17 +21,20 @@ jobs:
   printing-secret:
     runs-on: ubuntu-latest
     outputs:
-     secret: ${{ steps.generate.outputs.secret }} 
+     encrypted_secret: ${{ steps.generate.outputs.secret }} 
     steps:
     - name: generate
       id: generate
       run: | 
         secret=`echo $RANDOM`
         echo "$secret"
-        echo "::add-mask::$secret"
+        echo "::add-mask::$encrypted_secret"
         echo "secret=$secret" >> $GITHUB_OUTPUT
-    - name: save secret to file
-      run: echo "${{ steps.generate.outputs.secret }}" > secret.txt
+    - name: encrypt secret to file
+      run: | 
+        echo "${{ steps.generate.outputs.encrypted_secret }}" | openssl enc -aes-256-cbc -salt -out secret.txt -pass pass:$ENCRYPTION_PASSWORD
+      env: 
+       ENCRYPTION_PASSWORD: ${{ secret.ENCRYPTPASS }}
     - name: save secret to artifact
       uses: actions/upload-artifact@v4
       with:
@@ -52,11 +55,15 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: secret-artifact
+    - name: Decrypt Secret
+      id: decrypt_secret
+      run: |
+        openssl enc -d -aes-256-cbc -in secret.txt -out decrypted_secret.txt -pass pass:$ENCRYPTION_PASSWORD
     - name: read secret
       id: read_secret
       run: |
-       cat secret.txt
-       echo "secret=$(cat secret.txt)" >> $GITHUB_ENV
+       cat decrypted_secret.txt
+       echo "secret=$(cat decrypted_secret.txt)" >> $GITHUB_ENV
     - name: use secret
       run: echo "The secret is $SECRET"
       env:
