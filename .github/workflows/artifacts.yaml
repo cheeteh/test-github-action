@@ -1,0 +1,60 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+    paths:
+      - .github/workflows/artifacts.yaml
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - .github/workflows/artifacts.yaml
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  printing-secret:
+    runs-on: ubuntu-latest
+    outputs:
+     secret: ${{ steps.generate.outputs.secret }} 
+    steps:
+    - name: generate
+      id: generate
+      run: | 
+        secret=`echo $RANDOM`
+        echo "::add-mask::$secret"
+        echo "secret=$secret" >> $GITHUB_OUTPUT
+    - name: save secret to file
+      run: echo "${{ steps.generate_secret.outputs.secret }}" > secret.txt
+    - name: save secret to artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: secret-artifact
+        path: secret.txt
+  
+  fetch-secret:
+    runs-on: ubuntu-latest
+    needs: [printing-secret]
+    steps:
+    - name: fetch
+      shell: bash
+      run: |
+        secret="${{ needs.printing-secret.outputs.secret }}"
+        echo "print secret : ${secret}"
+    - name: download secret artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: secret-artifact
+        path: ./artifacts
+    - name: read secret
+      id: read_secret
+      run: echo "secret=$(cat ./artifacts/secret.txt)" >> $GITHUB_OUTPUT
+    - name: use secret
+      run: echo "The secret is $SECRET"
+      env:
+        SECRET: ${{ steps.read_secret.outputs.secret }}
