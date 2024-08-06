@@ -18,16 +18,17 @@ jobs:
   printing-secrets:
     runs-on: ubuntu-latest
     steps:
-    - name: generate-secret
+    - name: generate
+      id: generate
       run: | 
         secret=`echo $RANDOM`
         echo "::add-mask::${secret}"
         echo "secret=$secret" >> $GITHUB_OUTPUT
-    - name: print-secret-via-another-step
+    - name: print
       run: |
         echo "::add-mask::${SECRET_OUTPUTS}"
         echo "generated secret is : ${SECRET_OUTPUTS}"
       env:
-        SECRET_OUTPUTS: ${{ steps.step1.outputs.secret }}
+        SECRET_OUTPUTS: ${{ steps.generate.outputs.secret }}
     outputs:
-     secret: ${{ steps.step1.outputs.secret }} 
+     secret: ${{ steps.generate.outputs.secret }} 
