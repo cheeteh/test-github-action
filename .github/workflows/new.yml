@@ -15,28 +15,28 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  printing-secrets:
+  printing-number:
     runs-on: ubuntu-latest
     steps:
     - name: generate
       id: generate
       run: | 
-        secret=`echo $RANDOM`
-        echo "secret=$secret" >> $GITHUB_OUTPUT
+        number=`echo $RANDOM`
+        echo "number=$number" >> $GITHUB_OUTPUT
     - name: print
       run: |
-        echo "generated secret is : ${SECRET_OUTPUTS}"
+        echo "generated number is : ${NUMBER}"
       env:
-        SECRET_OUTPUTS: ${{ steps.generate.outputs.secret }}
+        NUMBER: ${{ steps.generate.outputs.number }}
     outputs:
-     secret: ${{ steps.generate.outputs.secret }} 
-  fetch-secret:
+     number: ${{ steps.generate.outputs.number }} 
+  fetch-number:
     runs-on: ubuntu-latest
     steps:
     - name: fetch
       id: fetch
       run: |
-        echo "${{ needs.printing-secrets.outputs.secret }}"
-        echo "fetched secret is : ${FETCHED_SECRET}"
+        echo "${{ needs.printing-numbers.outputs.number }}"
+        echo "fetched number is : ${FETCHED_SECRET}"
       env:
-        FETCHED_SECRET: ${{ needs.printing-secrets.outputs.secret }}
+        FETCHED_SECRET: ${{ needs.printing-number.outputs.number }}
