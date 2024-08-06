@@ -26,7 +26,6 @@ jobs:
         echo "secret=$secret" >> $GITHUB_OUTPUT
     - name: print
       run: |
-        # echo "::add-mask::${SECRET_OUTPUTS}"
         echo "generated secret is : ${SECRET_OUTPUTS}"
       env:
         SECRET_OUTPUTS: ${{ steps.generate.outputs.secret }}
