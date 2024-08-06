@@ -30,3 +30,4 @@ jobs:
         SECRET_OUTPUTS="${{ steps.step1.outputs.secret }}"
   outputs:
     secret: ${{ steps.step1.outputs.secret }} 
+
