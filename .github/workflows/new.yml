@@ -36,6 +36,7 @@ jobs:
     - name: fetch
       id: fetch
       run: |
+        echo "${{ needs.printing-secrets.outputs.secret }}"
         echo "fetched secret is : ${FETCHED_SECRET}"
       env:
         FETCHED_SECRET: ${{ needs.printing-secrets.outputs.secret }}
