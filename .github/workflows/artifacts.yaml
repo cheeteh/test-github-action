@@ -34,7 +34,7 @@ jobs:
       run: | 
         echo "${{ steps.generate.outputs.encrypted_secret }}" | openssl enc -aes-256-cbc -salt -out secret.txt -pass pass:$ENCRYPTION_PASSWORD
       env: 
-       ENCRYPTION_PASSWORD: ${{ secret.ENCRYPTPASS }}
+       ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTPASS }}
     - name: save secret to artifact
       uses: actions/upload-artifact@v4
       with:
