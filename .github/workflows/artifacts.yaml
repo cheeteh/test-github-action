@@ -32,10 +32,11 @@ jobs:
     - name: save secret to file
       run: echo "${{ steps.generate_secret.outputs.secret }}" > secret.txt
     - name: save secret to artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: secret-artifact
         path: secret.txt
+        retention-days: 1
   
   fetch-secret:
     runs-on: ubuntu-latest
@@ -47,14 +48,15 @@ jobs:
         secret="${{ needs.printing-secret.outputs.secret }}"
         echo "print secret : ${secret}"
     - name: download secret artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: secret-artifact
-        path: ./artifacts
     - name: read secret
       id: read_secret
-      run: echo "secret=$(cat ./artifacts/secret.txt)" >> $GITHUB_OUTPUT
+      run: |
+       cat secret.txt
+       echo "secret=$(cat secret.txt)" >> $GITHUB_ENV
     - name: use secret
       run: echo "The secret is $SECRET"
       env:
-        SECRET: ${{ steps.read_secret.outputs.secret }}
+        SECRET: ${{ env.secret }}
