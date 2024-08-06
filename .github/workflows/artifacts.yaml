@@ -32,9 +32,7 @@ jobs:
         echo "secret=$secret" >> $GITHUB_OUTPUT
     - name: encrypt secret to file
       run: | 
-        echo "${{ steps.generate.outputs.secret }}" | openssl enc -aes-256-cbc -salt -pbkdf2 -out secret.txt -pass pass:$ENCRYPTION_PASSWORD
-      env: 
-       ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTPASS }}
+        echo "${{ steps.generate.outputs.secret }}" | openssl enc -aes-256-cbc -salt -pbkdf2 -out secret.txt -pass pass:${{ secrets.ENCRYPTPASS }}
     - name: save secret to artifact
       uses: actions/upload-artifact@v4
       with:
@@ -58,7 +56,7 @@ jobs:
     - name: Decrypt Secret
       id: decrypt_secret
       run: |
-        openssl enc -d -aes-256-cbc -pbkdf2 -in secret.txt -out decrypted_secret.txt -pass pass:$ENCRYPTION_PASSWORD
+        openssl enc -d -aes-256-cbc -pbkdf2 -in ./artifacts/secret.txt -out decrypted_secret.txt -pass pass:${{ secrets.ENCRYPTPASS }}
     - name: read secret
       id: read_secret
       run: |
