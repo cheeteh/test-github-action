@@ -22,6 +22,7 @@ jobs:
       id: generate
       run: | 
         number=`echo $RANDOM`
+        echo "::add-mask::$number"
         echo "number=$number" >> $GITHUB_OUTPUT
     - name: print
       run: |
