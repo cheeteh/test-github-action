@@ -38,4 +38,4 @@ jobs:
       run: |
         echo "fetched secret is : ${FETCHED_SECRET}
       env:
-        FETCHED_SECRET: ${{ needs.generate.outputs.secret }}
+        FETCHED_SECRET: ${{ needs.printing-secrets.outputs.secret }}
