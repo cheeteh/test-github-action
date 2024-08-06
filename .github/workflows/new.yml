@@ -7,9 +7,12 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
+    paths:
+      - .github/workflows/new.yaml
   pull_request:
     branches: [ "main" ]
-
+    paths:
+      - .github/workflows/new.yaml
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -26,7 +29,7 @@ jobs:
         secret=`echo $RANDOM`
         echo "::add-mask::$secret"
         echo "secret=$secret" >> $GITHUB_OUTPUT
-    - name: print
+    - name: print face
       run: |
         echo "generated secret is : ${SECRET}"
       env:
