@@ -21,18 +21,18 @@ jobs:
   printing-secret:
     runs-on: ubuntu-latest
     outputs:
-     encrypted_secret: ${{ steps.generate.outputs.secret }} 
+     secret: ${{ steps.generate.outputs.secret }} 
     steps:
     - name: generate
       id: generate
       run: | 
         secret=`echo $RANDOM`
         echo "$secret"
-        echo "::add-mask::$encrypted_secret"
+        echo "::add-mask::$secret"
         echo "secret=$secret" >> $GITHUB_OUTPUT
     - name: encrypt secret to file
       run: | 
-        echo "${{ steps.generate.outputs.encrypted_secret }}" | openssl enc -aes-256-cbc -salt -out secret.txt -pass pass:$ENCRYPTION_PASSWORD
+        echo "${{ steps.generate.outputs.secret }}" | openssl enc -aes-256-cbc -salt -pbkdf2 -out secret.txt -pass pass:$ENCRYPTION_PASSWORD
       env: 
        ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTPASS }}
     - name: save secret to artifact
