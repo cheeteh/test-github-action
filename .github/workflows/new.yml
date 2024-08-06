@@ -32,6 +32,7 @@ jobs:
      number: ${{ steps.generate.outputs.number }} 
   fetch-number:
     runs-on: ubuntu-latest
+    needs: [printing-number]
     steps:
     - name: fetch
       id: fetch
